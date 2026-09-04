@@ -264,12 +264,13 @@ The analysis is run on the Minigraph-Cactus HPRC pangenome VCF, hprc-v1.0-mc-grc
 
 ## Output
 
-The pipeline produces several outputs across sections:
+The pipeline generates:
 
-1. A filtered, TE-only, biallelic pangenome VCF (TE_norm_mm90_nodup_1alt.vcf.gz), containing 20 346 TE variants (13 939 single-alt + 6 407 further split), along with a multiallelic counterpart (TE_norm_mm90_nodup_multialt.vcf)
-2. Population allele frequency tables (freqAFR, freqoutofAFR, freqSuper), TE-count filters (major_TE_stat, singletons, shared/nonref TE lists), pruned PCA eigenvectors/eigenvalues (TE_pca), Fst selection scan results, per-chromosome phased VCFs for haplotype-based selection scans, and Ohana admixture/genotype matrices (q.matrix, f.matrix, c.matrix, tree.nwk/.svg, scansel.txt)
-3. RepeatMasker divergence, repeat landscape (genome.html), summary, and Kimura distance (Kdistance_filtered.txt) outputs for evolutionary age estimation
-4. ANNOVAR gene-based annotation tables (anno_g.hg38_multianno.txt, R_1alt_annovar_out.txt) and a candidate TE loci VCF (TE_candi_all.vcf.gz) for AnnotSV/VEP annotation
-5. Background genomic window BED file (background_3713_hg38.bed) for recombination rate comparisons
+1. Processed TE variant dataset: a filtered set of biallelic TE variants from the HPRC pangenome.
+2. Population genetic results: allele frequencies, population structure, PCA, and selection scan results.
+3. Evolutionary analyses: TE divergence and evolutionary age estimates.
+4. Functional annotations: gene-based and genomic annotations of TE variants and candidate loci.
+5. Genomic context analyses: annotations and statistics describing the genomic environments of TE variants, including background regions for comparative analyses.
+6. Figures and summary tables: visualizations and processed datasets summarizing TE variation, population, evolutionary, and functional characteristics.
 
 
