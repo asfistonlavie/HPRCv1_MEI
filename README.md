@@ -1,10 +1,21 @@
-# Characterization of Transposable Elements Variations in the Human Pangenome
+# PanTE_human: Characterization of Transposable Element Variations in the Human Pangenome
 
-This page describes the pipeline used for the master's thesis "Characterization of Transposable Elements Variations in the Human Pangenome" (Shadi Shahatit, ISEM, UM 2023-2024), covering pangenomics data pre-processing and processing, frequency/PCA/selection scan analyses, evolutionary age estimates, functional genomics analysis, and genomic window statistics.
+This page describes the pipeline used to characterize transposable element (TE) variations in the Human Pangenome Reference Consortium (HPRC) v1 dataset. The analyses included identifying and characterizing TE presence/absence variants; assessing their population frequencies and genomic distributions; performing PCA and population structure analyses; conducting selection scans; estimating TE evolutionary age; functional and genomic annotation; enrichment analyses; and evaluating genomic features such as recombination rates and genomic context.
 
-## Tools
+## Tools and Scripts
 
-Install conda, vcfbub, vcftools, bcftools, bedtools, plink, RepeatMasker, ohana, ANNOVAR, AnnotSV, and VEP (see Appendix I for versions and links).
+- conda v24.1.2
+- vcfbub v0.1.0
+- vcftools v0.1.17
+- bcftools v1.19
+- bedtools v2.25.0
+- plink v1.90b6.21
+- RepeaMasker v4.1.5
+- ohana v0.1
+- ANNOVAR v3.3.9
+- AnnotSV https://lbgi.fr/AnnotSV/
+- VEP https://www.ensembl.org/info/docs/tools/vep/index.html
+- Public scripts; RepeaMasker: calcDivergenceFromAlign.pl, createRepeatLandscape.pl, buildSummary.pl; ANNOVAR: annotate_variation.pl, table_annovar.pl; Ohana: sample-sites.py
 
 ## 1.1 Pre-processing of the pangenome VCF
 
@@ -261,17 +272,4 @@ The pipeline produces several outputs across sections:
 4. ANNOVAR gene-based annotation tables (anno_g.hg38_multianno.txt, R_1alt_annovar_out.txt) and a candidate TE loci VCF (TE_candi_all.vcf.gz) for AnnotSV/VEP annotation
 5. Background genomic window BED file (background_3713_hg38.bed) for recombination rate comparisons
 
-## Appendix I - Tools and scripts
 
-- conda v24.1.2
-- vcfbub v0.1.0
-- vcftools v0.1.17
-- bcftools v1.19
-- bedtools v2.25.0
-- plink v1.90b6.21
-- RepeaMasker v4.1.5
-- ohana v0.1
-- ANNOVAR v3.3.9
-- AnnotSV https://lbgi.fr/AnnotSV/
-- VEP https://www.ensembl.org/info/docs/tools/vep/index.html
-- Public scripts; RepeaMasker: calcDivergenceFromAlign.pl, createRepeatLandscape.pl, buildSummary.pl; ANNOVAR: annotate_variation.pl, table_annovar.pl; Ohana: sample-sites.py
