@@ -273,4 +273,6 @@ The pipeline generates:
 5. Genomic context analyses: annotations and statistics describing the genomic environments of TE variants, including background regions for comparative analyses.
 6. Figures and summary tables: visualizations and processed datasets summarizing TE variation, population, evolutionary, and functional characteristics.
 
-
+## Authors
+Shadi Yacoub Shahatit
+Anna-Sophie Fiston-Lavier 
