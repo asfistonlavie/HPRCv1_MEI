@@ -1,4 +1,4 @@
-# PanTE_human: Characterization of Transposable Element Variations in the Human Pangenome
+# Characterization of Transposable Element Variations in the Human Pangenome
 
 This page describes the pipeline used to characterize transposable element (TE) variations in the Human Pangenome Reference Consortium (HPRC) v1 dataset. The analyses included identifying and characterizing TE presence/absence variants; assessing their population frequencies and genomic distributions; performing PCA and population structure analyses; conducting selection scans; estimating TE evolutionary age; functional and genomic annotation; enrichment analyses; and evaluating genomic features such as recombination rates and genomic context.
 
