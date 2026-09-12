@@ -1557,6 +1557,36 @@ genes_top10_terms_rGREAT_polymorphic %>%
   filter(grepl("SULF1", annotated_genes)) %>%
   pull(description)
 
+## add annotated genes to the supp table of rGREAT results
+
+genes_top10_terms_rGREAT_rare_v2 <- top10_terms_rGREAT %>%
+  filter(class == "Rare") %>%
+  rowwise() %>%
+  mutate(
+    Entrez_ID = list(intersect(
+      names(RegionGeneAss_Rare_map),
+      TE_anno_freq_rare_res@gene_sets[[id]])),
+    annotated_genes = paste(unname(RegionGeneAss_Rare_map[Entrez_ID]), collapse = ", ")) %>%
+  ungroup()
+
+colnames(tb_allfreq_master_top10)
+colnames(genes_top10_terms_rGREAT_rare_v2)
+colnames(genes_top10_terms_rGREAT_polymorphic)
+
+tb_allfreq_master_top10_annogenes <- tb_allfreq_master_top10 %>%
+  left_join(
+    bind_rows(genes_top10_terms_rGREAT_rare_v2, genes_top10_terms_rGREAT_polymorphic) %>%
+      group_by(class, id, description) %>%
+      summarise(
+        Entrez_ID = paste(unique(Entrez_ID), collapse = ";"),
+        annotated_genes = paste(unique(annotated_genes), collapse = ";"),
+        .groups = "drop"),
+    by = c("class", "id", "description"))
+
+identical(tb_allfreq_master_top10_annogenes$description,tb_allfreq_master_top10$description)
+identical(tb_allfreq_master_top10_annogenes$annotated_genes,
+          bind_rows(genes_top10_terms_rGREAT_rare_v2,genes_top10_terms_rGREAT_polymorphic)$annotated_genes)
+
 # Recombination rate, TE size, and gene distance ------------------------------------------------------
 
 ## define recombination rate date
@@ -5397,7 +5427,7 @@ Rdataframes_CT <- data.frame(
     "maj_sin_shar_tidy",
     "TE_indv_sin_tidy",
     
-    "tb_allfreq_master_top10",
+    "tb_allfreq_master_top10_annogenes",
     
     "candidate_TE_div_Fst",
     "selection_combined_2report",
@@ -5446,7 +5476,7 @@ openxlsx::write.xlsx(list(
   Sheet12 = background_rec,
   Sheet13 = maj_sin_shar_tidy,
   Sheet14 = TE_indv_sin_tidy,
-  Sheet15 = tb_allfreq_master_top10,
+  Sheet15 = tb_allfreq_master_top10_annogenes,
   Sheet16 = candidate_TE_div_Fst,
   Sheet17 = selection_combined_2report,
   Sheet18 = TE_freq_anno_selscan_rec_master,
