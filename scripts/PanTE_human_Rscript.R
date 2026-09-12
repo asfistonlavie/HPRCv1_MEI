@@ -355,7 +355,7 @@ figsupp_TEcountchrlength <- ggplot(data=size_length_counted, mapping=aes(x=chr_l
 # ggsave(file.path(sys_dir,"PanTE_human/paper_fig/figsupp_TEcountchrlength.png"), plot=ggplot2::last_plot())
 
 ggsave(filename = file.path(sys_dir, "PanTE_human_2025_v2/paper_fig/HumGenom_Final", "figsupp_TEcountchrlength.png"),
-       plot = figsupp_TEcountchrlength, width = 12, height = 10, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
+       plot = figsupp_TEcountchrlength, width = 6, height = 4, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
 
 TE_size_chr <- size_length %>%
   group_by(CHR) %>%
@@ -381,7 +381,7 @@ figsupp_TEsizechrlength <- ggplot(data=TE_size_chr, mapping=aes(x=mean_chr_lengt
 # ggsave(file.path(sys_dir,"PanTE_human/paper_fig/figsupp_TEsizechrlength.png"), plot=ggplot2::last_plot())
 
 ggsave(filename = file.path(sys_dir, "PanTE_human_2025_v2/paper_fig/HumGenom_Final", "figsupp_TEsizechrlength.png"),
-       plot = figsupp_TEcountchrlength, width = 12, height = 10, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
+       plot = figsupp_TEsizechrlength, width = 6, height = 4, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
 
 TE_percen_chr <- size_length %>%
   group_by(CHR) %>%
@@ -588,7 +588,7 @@ figsupp_TEcountperchr <- ggplot(biTE_count_2, aes(x = (CHR), y=(norm_count), fil
 # ggsave(file.path(sys_dir,"PanTE_human/paper_fig/figsupp_TEcountperchr.png"), plot=ggplot2::last_plot())
 
 ggsave(filename = file.path(sys_dir, "PanTE_human_2025_v2/paper_fig/HumGenom_Final", "figsupp_TEcountperchr.png"),
-       plot = figsupp_TEcountperchr, width = 12, height = 10, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
+       plot = figsupp_TEcountperchr, width = 14, height = 10, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
 
 contingency_table <- table(biTE_count$CHR)
 c_test_result <- chisq.test(contingency_table)
@@ -4810,7 +4810,8 @@ ggplot(ORA_KEGG_TE_intergene_pos,
 ## lets separate high freq AFR and high freq OOA and then
 ## extract genes associated with TE var under +ve sel 
 
-# TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod <- TE_freq_anno_selscan_rec_rGREAT_master_154 %>%
+# for TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod
+
 TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod <- TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod %>%
   mutate(
     freq_diff = TE_FREQ.OOA - TE_FREQ.AFR,
@@ -4823,7 +4824,38 @@ plot(density(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod$TE_FREQ.AFR))
 plot(density(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod$TE_FREQ.OOA))
 plot(density(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod$freq_diff))
 
-figsupp_selscan_freqdiff <- ggplot(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod, aes(x = TE_FREQ.AFR, y = TE_FREQ.OOA, color = high_freq_diff)) +
+ggplot(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod, aes(x = TE_FREQ.AFR, y = TE_FREQ.OOA, color = high_freq_diff)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  geom_point(size = 2.5) +
+  scale_color_manual(values = c("#333333", "firebrick"), labels = c("Low difference", "High difference"), name = NULL) +
+  labs(x = "AFR TE frequency", y = "Non-AFR TE frequency") +
+  theme_minimal()
+
+ggplot(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod, aes(x = TE_FREQ.AFR, y = TE_FREQ.OOA, color = high_freq_diff)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  geom_point(size = 2.5) +
+  geom_text_repel(
+    data = subset(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod, high_freq_diff == T & LOC == "Introns"),
+    aes(label = Gene.refGene), color = "black", size = 3, box.padding = 0.4, point.padding = 0.3, max.overlaps = Inf) +
+  scale_color_manual(values = c("#333333", "firebrick"), labels = c("Low difference", "High difference"), name = NULL) +
+  labs(x = "AFR TE frequency", y = "Non-AFR TE frequency") +
+  theme_minimal()
+
+# for TE_freq_anno_selscan_rec_rGREAT_master_154
+
+TE_freq_anno_selscan_rec_rGREAT_master_154 <- TE_freq_anno_selscan_rec_rGREAT_master_154 %>%
+  mutate(
+    freq_diff = TE_FREQ.OOA - TE_FREQ.AFR,
+    # high_freq_diff = abs(freq_diff) >= quantile(abs(freq_diff), 0.75, na.rm = TRUE),
+    high_freq_diff_AFR = freq_diff <= quantile(freq_diff, 0.10, na.rm = TRUE),
+    high_freq_diff_OOA = freq_diff >= quantile(freq_diff, 0.90, na.rm = TRUE),
+    high_freq_diff = high_freq_diff_AFR == T | high_freq_diff_OOA == T)
+
+plot(density(TE_freq_anno_selscan_rec_rGREAT_master_154$TE_FREQ.AFR))
+plot(density(TE_freq_anno_selscan_rec_rGREAT_master_154$TE_FREQ.OOA))
+plot(density(TE_freq_anno_selscan_rec_rGREAT_master_154$freq_diff))
+
+figsupp_selscan_freqdiff <- ggplot(TE_freq_anno_selscan_rec_rGREAT_master_154, aes(x = TE_FREQ.AFR, y = TE_FREQ.OOA, color = high_freq_diff)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
   geom_point(size = 2.5) +
   scale_color_manual(values = c("#333333", "firebrick"), labels = c("Low difference", "High difference"), name = NULL) +
@@ -4831,13 +4863,13 @@ figsupp_selscan_freqdiff <- ggplot(TE_freq_anno_selscan_rec_rGREAT_master_filter
   theme_minimal()
 
 ggsave(filename = file.path(sys_dir, "PanTE_human_2025_v2/paper_fig/HumGenom_Final", "figsupp_selscan_freqdiff.png"),
-       plot = figsupp_selscan_freqdiff, width = 12, height = 10, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
+       plot = figsupp_selscan_freqdiff, width = 8, height = 6, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
 
-ggplot(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod, aes(x = TE_FREQ.AFR, y = TE_FREQ.OOA, color = high_freq_diff)) +
+ggplot(TE_freq_anno_selscan_rec_rGREAT_master_154, aes(x = TE_FREQ.AFR, y = TE_FREQ.OOA, color = high_freq_diff)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
   geom_point(size = 2.5) +
   geom_text_repel(
-    data = subset(TE_freq_anno_selscan_rec_rGREAT_master_filtered_mod, high_freq_diff == T & LOC == "Introns"),
+    data = subset(TE_freq_anno_selscan_rec_rGREAT_master_154, high_freq_diff == T & LOC == "Introns"),
     aes(label = Gene.refGene), color = "black", size = 3, box.padding = 0.4, point.padding = 0.3, max.overlaps = Inf) +
   scale_color_manual(values = c("#333333", "firebrick"), labels = c("Low difference", "High difference"), name = NULL) +
   labs(x = "AFR TE frequency", y = "Non-AFR TE frequency") +
@@ -4998,6 +5030,45 @@ ORA_KEGG_positive_selection_3meth_genes_df_sig <- ORA_KEGG_positive_selection_3m
   filter(p.adjust < 0.05) %>%
   arrange(p.adjust) %>%
   slice_head(n = 10)
+
+ORA_GO_BP_positive_selection_3meth_genes_plot <- ggplot(
+  ORA_GO_BP_positive_selection_3meth_genes_df_sig,
+  aes(x = FoldEnrichment, y = fct_reorder(Description, FoldEnrichment), fill = -log10(p.adjust))) +
+  geom_col(width = 0.7) +
+  # scale_fill_viridis_c(name = expression(-log[10](p.adjust))) +
+  scale_fill_gradient(name = expression(-log[10](p.adjust)), low = "firebrick2", high = "firebrick4") +
+  labs(x = "Fold enrichment", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.y = element_text(size = 11),
+    axis.text.x = element_text(size = 11),
+    axis.title.x = element_text(size = 13),
+    # legend.title = element_text(size = 13),
+    # legend.text = element_text(size = 12),
+    legend.position = "bottom",
+    panel.grid.major.y = element_blank())
+ORA_KEGG_positive_selection_3meth_genes_plot <- ggplot(
+  ORA_KEGG_positive_selection_3meth_genes_df_sig,
+  aes(x = FoldEnrichment, y = fct_reorder(Description, FoldEnrichment), fill = -log10(p.adjust))) +
+  geom_col(width = 0.7) +
+  # scale_fill_viridis_c(name = expression(-log[10](p.adjust))) +
+  scale_fill_gradient(name = expression(-log[10](p.adjust)), low = "firebrick2", high = "firebrick4") +
+  labs(x = "Fold enrichment", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.y = element_text(size = 11),
+    axis.text.x = element_text(size = 11),
+    axis.title.x = element_text(size = 13),
+    # legend.title = element_text(size = 13),
+    # legend.text = element_text(size = 12),
+    legend.position = "bottom",
+    panel.grid.major.y = element_blank())
+
+figsupp_ORA_positive_selection_3meth_genes <-
+  ORA_GO_BP_positive_selection_3meth_genes_plot + ORA_KEGG_positive_selection_3meth_genes_plot
+
+ggsave(filename = file.path(sys_dir, "PanTE_human_2025_v2/paper_fig/HumGenom_Final", "figsupp_ORA_positive_selection_3meth_genes.png"),
+       plot = figsupp_ORA_positive_selection_3meth_genes, width = 20, height = 12, units = "in", dpi = 600, bg = "white", limitsize = FALSE)
 
 ## I am not sure if this is a specific or random effect of genes
 ## create a random set of 5 genes five times and detected fun enrich
