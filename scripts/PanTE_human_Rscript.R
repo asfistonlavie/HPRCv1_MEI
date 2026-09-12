@@ -1479,8 +1479,6 @@ binomial_rGREAT_fc_plot <- ggplot(subset(tb_allfreq_master_top10, stats_sig %in%
 
 hyper_rGREAT_fc_plot / binomial_rGREAT_fc_plot
 
-write_xlsx(tb_allfreq_master_top10, file.path(sys_dir,'PanTE_human_2025_v2/scripts/rGREAT_tb_res_allfreq_master_top10_v4_final.xlsx'))
-
 ## get genes of sig enrich
 
 top10_terms_rGREAT <- tb_allfreq_master_top10 %>%
@@ -1581,11 +1579,16 @@ tb_allfreq_master_top10_annogenes <- tb_allfreq_master_top10 %>%
         Entrez_ID = paste(unique(Entrez_ID), collapse = ";"),
         annotated_genes = paste(unique(annotated_genes), collapse = ";"),
         .groups = "drop"),
-    by = c("class", "id", "description"))
+    by = c("class", "id", "description")) %>%
+  mutate(
+    Entrez_ID = if_else(description %in% c("cellular process", "biological_process"), NA_character_, Entrez_ID),
+    annotated_genes = if_else(description %in% c("cellular process", "biological_process"), NA_character_, annotated_genes))
 
 identical(tb_allfreq_master_top10_annogenes$description,tb_allfreq_master_top10$description)
-identical(tb_allfreq_master_top10_annogenes$annotated_genes,
-          bind_rows(genes_top10_terms_rGREAT_rare_v2,genes_top10_terms_rGREAT_polymorphic)$annotated_genes)
+identical(tb_allfreq_master_top10_annogenes[!is.na(tb_allfreq_master_top10_annogenes$annotated_genes),]$annotated_genes,
+          bind_rows(genes_top10_terms_rGREAT_rare,genes_top10_terms_rGREAT_polymorphic)$annotated_genes)
+
+write_xlsx(tb_allfreq_master_top10_annogenes, file.path(sys_dir,'PanTE_human_2025_v2/scripts/rGREAT_tb_res_allfreq_master_top10_v4_final.xlsx'))
 
 # Recombination rate, TE size, and gene distance ------------------------------------------------------
 
